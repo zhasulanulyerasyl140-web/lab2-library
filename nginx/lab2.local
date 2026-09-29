@@ -1,0 +1,35 @@
+server {
+    listen 81;
+    server_name lab2.local localhost;
+
+    root /var/www/lab2.local/html;
+    index index.html;
+
+    access_log /var/log/nginx/lab2.access.log;
+    error_log  /var/log/nginx/lab2.error.log;
+
+    add_header X-Project "library" always;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location = /health {
+        default_type text/plain;
+        return 200 "OK\n";
+    }
+
+    location = /api/info {
+        default_type application/json;
+        return 200 '{"project":"library","status":"ok"}';
+    }
+
+    location = /version {
+        default_type text/plain;
+        return 200 "v2\n";
+    }
+
+    location = /old-page {
+        return 301 /about.html;
+    }
+}
